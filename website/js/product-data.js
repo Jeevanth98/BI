@@ -24,11 +24,14 @@ async function loadProductData() {
  */
 async function loadProductsFromCSV() {
     try {
-        const response = await fetch('../PowerBI_Data/Product_Analysis.csv');
+        const response = await fetch('/PowerBI_Data/Product_Analysis.csv');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const text = await response.text();
         return parseProductCSV(text);
     } catch (error) {
-        console.warn('Could not load Product_Analysis.csv, using sample data');
+        console.warn('Could not load Product_Analysis.csv, using sample data:', error);
         return null;
     }
 }
@@ -220,7 +223,10 @@ async function createProductCharts(products) {
  */
 async function loadCategoryData() {
     try {
-        const response = await fetch('../PowerBI_Data/Category_Analysis.csv');
+        const response = await fetch('/PowerBI_Data/Category_Analysis.csv');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const text = await response.text();
         
         const lines = text.split('\n');
@@ -242,7 +248,7 @@ async function loadCategoryData() {
         
         return categories;
     } catch (error) {
-        console.warn('Could not load Category_Analysis.csv');
+        console.warn('Could not load Category_Analysis.csv:', error);
         return null;
     }
 }

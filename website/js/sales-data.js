@@ -24,11 +24,14 @@ async function loadSalesData() {
  */
 async function loadSalesFromCSV() {
     try {
-        const response = await fetch('../PowerBI_Data/Sales_Forecast.csv');
+        const response = await fetch('/PowerBI_Data/Sales_Forecast.csv');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const text = await response.text();
         return parseSalesCSV(text);
     } catch (error) {
-        console.warn('Could not load Sales_Forecast.csv, using sample data');
+        console.warn('Could not load Sales_Forecast.csv, using sample data:', error);
         return null;
     }
 }

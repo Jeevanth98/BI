@@ -26,11 +26,14 @@ async function loadCustomerData() {
  */
 async function loadCustomersFromCSV() {
     try {
-        const response = await fetch('../PowerBI_Data/Customer_Analysis.csv');
+        const response = await fetch('/PowerBI_Data/Customer_Analysis.csv');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const text = await response.text();
         return parseCustomerCSV(text);
     } catch (error) {
-        console.warn('Could not load Customer_Analysis.csv, using sample data');
+        console.warn('Could not load Customer_Analysis.csv, using sample data:', error);
         return null;
     }
 }
