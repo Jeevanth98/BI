@@ -66,24 +66,51 @@ function parseCustomerCSV(text) {
 }
 
 /**
- * Populate high-risk customers table
+ * Populate customers table (dynamic based on filters)
  */
 function populateHighRiskTable(customers) {
     const tbody = document.getElementById('highRiskTableBody');
+    const tableTitle = document.getElementById('customerTableTitle');
     if (!tbody) return;
     
-    // Filter high-risk customers
-    const highRisk = customers.filter(c => 
-        c.churn_risk_level === 'High Risk' || 
-        parseFloat(c.churn_probability) > 0.7
-    );
+    // Update table title based on filters
+    const riskFilter = document.getElementById('riskFilter');
+    const segmentFilter = document.getElementById('segmentFilter');
     
-    if (highRisk.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="loading">No high-risk customers found</td></tr>';
+    let titleText = 'Customer Details';
+    let titleIcon = 'fas fa-users';
+    
+    if (riskFilter && riskFilter.value !== 'all') {
+        const riskLabels = {
+            'high': 'High-Risk Customers',
+            'medium': 'Medium-Risk Customers',
+            'low': 'Low-Risk Customers'
+        };
+        titleText = riskLabels[riskFilter.value] || 'Customer Details';
+        titleIcon = riskFilter.value === 'high' ? 'fas fa-exclamation-triangle' : 
+                    riskFilter.value === 'medium' ? 'fas fa-exclamation-circle' : 
+                    'fas fa-check-circle';
+    } else if (segmentFilter && segmentFilter.value !== 'all') {
+        titleText = segmentFilter.options[segmentFilter.selectedIndex].text;
+        titleIcon = 'fas fa-users';
+    }
+    
+    if (tableTitle) {
+        tableTitle.innerHTML = `<i class="${titleIcon}"></i> ${titleText}`;
+    }
+    
+    // Show all filtered customers (not just high-risk)
+    if (customers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="loading">No customers found matching the selected filters</td></tr>';
         return;
     }
     
-    tbody.innerHTML = highRisk.slice(0, 20).map(customer => `
+    // Sort by churn probability (highest first) and limit to top 20
+    const sortedCustomers = [...customers].sort((a, b) => 
+        parseFloat(b.churn_probability || 0) - parseFloat(a.churn_probability || 0)
+    );
+    
+    tbody.innerHTML = sortedCustomers.slice(0, 20).map(customer => `
         <tr>
             <td>${customer.customer_unique_id?.substring(0, 12)}...</td>
             <td>${customer.segment_name || 'N/A'}</td>

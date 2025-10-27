@@ -64,24 +64,52 @@ function parseProductCSV(text) {
 }
 
 /**
- * Populate high-risk products table
+ * Populate products table (dynamic based on filters)
  */
 function populateHighRiskProductsTable(products) {
     const tbody = document.getElementById('highRiskProductsBody');
+    const tableTitle = document.getElementById('productTableTitle');
     if (!tbody) return;
     
-    // Filter high-risk products
-    const highRisk = products.filter(p => 
-        p.return_risk_level === 'High Risk' || 
-        parseInt(p.predicted_return) === 1
-    );
+    // Update table title based on filters
+    const returnRiskFilter = document.getElementById('returnRiskFilter');
+    const categoryFilter = document.getElementById('categoryFilter');
     
-    if (highRisk.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="loading">No high-risk products found</td></tr>';
+    let titleText = 'Product Details';
+    let titleIcon = 'fas fa-box';
+    
+    if (returnRiskFilter && returnRiskFilter.value !== 'all') {
+        const riskLabels = {
+            'high': 'High-Risk Products',
+            'medium': 'Medium-Risk Products',
+            'low': 'Low-Risk Products'
+        };
+        titleText = riskLabels[returnRiskFilter.value] || 'Product Details';
+        titleIcon = returnRiskFilter.value === 'high' ? 'fas fa-exclamation-triangle' : 
+                    returnRiskFilter.value === 'medium' ? 'fas fa-exclamation-circle' : 
+                    'fas fa-check-circle';
+    } else if (categoryFilter && categoryFilter.value !== 'all') {
+        const categoryName = categoryFilter.options[categoryFilter.selectedIndex].text;
+        titleText = `${categoryName} Products`;
+        titleIcon = 'fas fa-boxes';
+    }
+    
+    if (tableTitle) {
+        tableTitle.innerHTML = `<i class="${titleIcon}"></i> ${titleText}`;
+    }
+    
+    // Show all filtered products (not just high-risk)
+    if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="loading">No products found matching the selected filters</td></tr>';
         return;
     }
     
-    tbody.innerHTML = highRisk.slice(0, 20).map(product => `
+    // Sort by return probability (highest first) and limit to top 20
+    const sortedProducts = [...products].sort((a, b) => 
+        parseFloat(b.return_probability || 0) - parseFloat(a.return_probability || 0)
+    );
+    
+    tbody.innerHTML = sortedProducts.slice(0, 20).map(product => `
         <tr>
             <td>${product.product_category_name || 'N/A'}</td>
             <td>${dashboardUtils.formatCurrency(parseFloat(product.price) || 0)}</td>
@@ -261,6 +289,7 @@ async function loadCategoryData() {
  */
 function applyProductFilters() {
     const categoryFilter = document.getElementById('categoryFilter');
+    const returnRiskFilter = document.getElementById('returnRiskFilter');
     
     let filteredProducts = [...allProducts];
     
@@ -268,6 +297,19 @@ function applyProductFilters() {
     if (categoryFilter && categoryFilter.value !== 'all') {
         filteredProducts = filteredProducts.filter(p => 
             p.product_category_name === categoryFilter.value
+        );
+    }
+    
+    // Apply return risk filter
+    if (returnRiskFilter && returnRiskFilter.value !== 'all') {
+        const riskMap = {
+            'high': 'High Risk',
+            'medium': 'Medium Risk',
+            'low': 'Low Risk'
+        };
+        const targetRisk = riskMap[returnRiskFilter.value];
+        filteredProducts = filteredProducts.filter(p => 
+            p.return_risk_level === targetRisk
         );
     }
     
@@ -336,10 +378,15 @@ document.addEventListener('DOMContentLoaded', () => {
         loadProductData().then(() => {
             populateCategoryFilter();
             
-            // Add filter event listener
+            // Add filter event listeners
             const categoryFilter = document.getElementById('categoryFilter');
+            const returnRiskFilter = document.getElementById('returnRiskFilter');
+            
             if (categoryFilter) {
                 categoryFilter.addEventListener('change', applyProductFilters);
+            }
+            if (returnRiskFilter) {
+                returnRiskFilter.addEventListener('change', applyProductFilters);
             }
         });
     }
