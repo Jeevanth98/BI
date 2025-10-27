@@ -40,7 +40,7 @@ async function loadSalesFromCSV() {
 }
 
 /**
- * Parse sales CSV
+ * Parse sales CSV and add week of month
  */
 function parseSalesCSV(text) {
     const lines = text.split('\n');
@@ -56,6 +56,13 @@ function parseSalesCSV(text) {
         headers.forEach((header, index) => {
             sale[header] = values[index]?.trim();
         });
+        
+        // Calculate week of month (1-4 or 1-5) from the date
+        if (sale.date) {
+            const date = new Date(sale.date);
+            const dayOfMonth = date.getDate();
+            sale.week_of_month = Math.ceil(dayOfMonth / 7).toString();
+        }
         
         salesData.push(sale);
     }
@@ -316,13 +323,14 @@ function aggregateByMonth(salesData) {
 }
 
 /**
- * Aggregate sales by week
+ * Aggregate sales by week (using week of month)
  */
 function aggregateByWeek(salesData) {
     const weekly = {};
     salesData.forEach(sale => {
-        const week = 'Week ' + (sale.week_number || 'Unknown');
-        weekly[week] = (weekly[week] || 0) + parseFloat(sale.predicted_sales || 0);
+        // Group by month and week of month
+        const monthWeek = (sale.month_name || 'Unknown') + ' Week ' + (sale.week_of_month || sale.week_number || 'Unknown');
+        weekly[monthWeek] = (weekly[monthWeek] || 0) + parseFloat(sale.predicted_sales || 0);
     });
     return weekly;
 }
@@ -357,17 +365,17 @@ function applySalesFilters() {
     
     let filteredSales = [...allSalesData];
     
-    // Apply month filter
+    // Apply month filter first
     if (monthFilter && monthFilter.value !== 'all') {
         filteredSales = filteredSales.filter(s => 
             s.month_name === monthFilter.value
         );
     }
     
-    // Apply week filter
+    // Apply week filter (week of month: 1-4 or 1-5)
     if (weekFilter && weekFilter.value !== 'all') {
         filteredSales = filteredSales.filter(s => 
-            s.week_number === weekFilter.value
+            s.week_of_month === weekFilter.value
         );
     }
     
@@ -397,20 +405,17 @@ function populateSalesFilters() {
         });
     }
     
-    // Populate week filter
+    // Populate week filter (Week 1-5 of month)
     const weekFilter = document.getElementById('weekFilter');
     if (weekFilter) {
-        const weeks = [...new Set(allSalesData.map(s => s.week_number))];
-        weeks.sort((a, b) => parseInt(a) - parseInt(b));
         weekFilter.innerHTML = '<option value="all">All Weeks</option>';
-        weeks.forEach(week => {
-            if (week) {
-                const option = document.createElement('option');
-                option.value = week;
-                option.textContent = `Week ${week}`;
-                weekFilter.appendChild(option);
-            }
-        });
+        // Only show weeks 1-5 (max weeks in a month)
+        for (let i = 1; i <= 5; i++) {
+            const option = document.createElement('option');
+            option.value = i.toString();
+            option.textContent = `Week ${i}`;
+            weekFilter.appendChild(option);
+        }
     }
 }
 
@@ -428,6 +433,10 @@ function useSampleSalesData() {
         
         const baseSales = 34000 + Math.sin(i / 10) * 5000 + Math.random() * 3000;
         
+        // Calculate week of month (1-4 or 1-5)
+        const dayOfMonth = date.getDate();
+        const weekOfMonth = Math.ceil(dayOfMonth / 7);
+        
         salesData.push({
             date: date.toISOString().split('T')[0],
             predicted_sales: baseSales.toFixed(2),
@@ -435,7 +444,8 @@ function useSampleSalesData() {
             lower_bound: (baseSales - 7000).toFixed(2),
             month_name: date.toLocaleString('en-US', { month: 'short' }),
             day_of_week: date.toLocaleString('en-US', { weekday: 'long' }),
-            week_number: Math.ceil(i / 7).toString()
+            week_number: Math.ceil((i + 1) / 7).toString(), // Keep for compatibility
+            week_of_month: weekOfMonth.toString()
         });
     }
     
