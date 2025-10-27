@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI Dashboard - Executive Summary</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>BI Dashboard</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Executive</a></li>
+                <li class="nav-item"><a href="customers.html" class="nav-link"><i class="fas fa-users"></i> Customers</a></li>
+                <li class="nav-item"><a href="products.html" class="nav-link"><i class="fas fa-box"></i> Products</a></li>
+                <li class="nav-item"><a href="sales.html" class="nav-link"><i class="fas fa-chart-bar"></i> Sales</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1><i class="fas fa-tachometer-alt"></i> Executive Summary</h1>
+            <p class="subtitle">Key Performance Indicators & Business Overview</p>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-container">
+            <div class="kpi-card blue">
+                <div class="kpi-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Total Customers</h3>
+                    <p class="kpi-value" id="totalCustomers">100</p>
+                    <span class="kpi-label">Active Users</span>
+                </div>
+            </div>
+
+            <div class="kpi-card red">
+                <div class="kpi-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Churn Rate</h3>
+                    <p class="kpi-value" id="churnRate">46%</p>
+                    <span class="kpi-label">At Risk</span>
+                </div>
+            </div>
+
+            <div class="kpi-card orange">
+                <div class="kpi-icon">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>High Risk</h3>
+                    <p class="kpi-value" id="highRisk">46</p>
+                    <span class="kpi-label">Customers</span>
+                </div>
+            </div>
+
+            <div class="kpi-card green">
+                <div class="kpi-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Forecasted Sales</h3>
+                    <p class="kpi-value" id="forecastedSales">$3.1M</p>
+                    <span class="kpi-label">90 Days</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power BI Embed Section -->
+        <div class="powerbi-section">
+            <h2><i class="fas fa-chart-pie"></i> Power BI Dashboard</h2>
+            <p class="section-description">Interactive visualizations powered by Power BI</p>
+            
+            <div class="powerbi-container">
+                <!-- Power BI Embed Placeholder -->
+                <div id="powerbi-embed" class="powerbi-embed">
+                    <div class="embed-instructions">
+                        <i class="fas fa-info-circle"></i>
+                        <h3>Power BI Embed Setup Required</h3>
+                        <p>To display your Power BI dashboard here, follow these steps:</p>
+                        <ol>
+                            <li>Publish your dashboard to <strong>Power BI Service</strong></li>
+                            <li>Get the embed code from Power BI portal</li>
+                            <li>Update the <code>powerBIConfig</code> in <code>js/powerbi.js</code></li>
+                            <li>Refresh this page</li>
+                        </ol>
+                        <p class="note"><strong>Note:</strong> Power BI embedding requires a Pro or Premium license.</p>
+                        <a href="https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-embed-secure" target="_blank" class="btn-primary">
+                            <i class="fas fa-book"></i> Learn More
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Grid - Alternative Visualization -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Customer Segments</h3>
+                <canvas id="segmentChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-line"></i> Churn Risk Distribution</h3>
+                <canvas id="churnChart"></canvas>
+            </div>
+            <div class="chart-card full-width">
+                <h3><i class="fas fa-chart-area"></i> 90-Day Sales Forecast</h3>
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-section">
+            <h2><i class="fas fa-database"></i> Quick Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fas fa-crown"></i>
+                    <div>
+                        <h4>VIP Customers</h4>
+                        <p>25 customers</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <div>
+                        <h4>Recent Buyers</h4>
+                        <p>35 customers</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-frown"></i>
+                    <div>
+                        <h4>Unhappy</h4>
+                        <p>20 customers</p>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-user-slash"></i>
+                    <div>
+                        <h4>Inactive</h4>
+                        <p>20 customers</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 BI Dashboard. Powered by Machine Learning & Power BI</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/powerbi.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

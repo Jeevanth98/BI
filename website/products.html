@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI Dashboard - Product Analysis</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>BI Dashboard</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Executive</a></li>
+                <li class="nav-item"><a href="customers.html" class="nav-link"><i class="fas fa-users"></i> Customers</a></li>
+                <li class="nav-item"><a href="products.html" class="nav-link active"><i class="fas fa-box"></i> Products</a></li>
+                <li class="nav-item"><a href="sales.html" class="nav-link"><i class="fas fa-chart-bar"></i> Sales</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1><i class="fas fa-box-open"></i> Product Analysis</h1>
+            <p class="subtitle">Product Return Prediction & Category Insights</p>
+        </div>
+
+        <!-- KPI Cards for Products -->
+        <div class="kpi-container">
+            <div class="kpi-card blue">
+                <div class="kpi-icon">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Total Products</h3>
+                    <p class="kpi-value">100</p>
+                    <span class="kpi-label">Analyzed</span>
+                </div>
+            </div>
+
+            <div class="kpi-card red">
+                <div class="kpi-icon">
+                    <i class="fas fa-undo"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Return Rate</h3>
+                    <p class="kpi-value">31%</p>
+                    <span class="kpi-label">Average</span>
+                </div>
+            </div>
+
+            <div class="kpi-card orange">
+                <div class="kpi-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>High Risk</h3>
+                    <p class="kpi-value">31</p>
+                    <span class="kpi-label">Products</span>
+                </div>
+            </div>
+
+            <div class="kpi-card green">
+                <div class="kpi-icon">
+                    <i class="fas fa-tags"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Categories</h3>
+                    <p class="kpi-value">15+</p>
+                    <span class="kpi-label">Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+            <div class="filter-controls">
+                <div class="filter-item">
+                    <label for="categoryFilter">Product Category</label>
+                    <select id="categoryFilter">
+                        <option value="all">All Categories</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="furniture">Furniture</option>
+                        <option value="home_decor">Home Decor</option>
+                        <option value="sports">Sports & Leisure</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="returnRiskFilter">Return Risk Level</label>
+                    <select id="returnRiskFilter">
+                        <option value="all">All Risk Levels</option>
+                        <option value="high">High Risk</option>
+                        <option value="medium">Medium Risk</option>
+                        <option value="low">Low Risk</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power BI Embed Section -->
+        <div class="powerbi-section">
+            <h2><i class="fas fa-chart-pie"></i> Product Analytics Dashboard</h2>
+            <p class="section-description">Product return predictions and category analysis</p>
+            
+            <div class="powerbi-container">
+                <div id="powerbi-product-embed" class="powerbi-embed">
+                    <div class="embed-instructions">
+                        <i class="fas fa-box-open"></i>
+                        <h3>Power BI Product Dashboard</h3>
+                        <p>Configure your Power BI Product Analysis page embed here.</p>
+                        <p class="note">Update <code>productPageConfig</code> in <code>js/powerbi.js</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Top 10 High-Risk Categories</h3>
+                <canvas id="categoryRiskChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Return Risk Distribution</h3>
+                <canvas id="productRiskChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Price vs Return Scatter -->
+        <div class="chart-card full-width">
+            <h3><i class="fas fa-project-diagram"></i> Price vs Return Probability</h3>
+            <canvas id="priceReturnScatter"></canvas>
+        </div>
+
+        <!-- High Risk Products Table -->
+        <div class="table-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> High-Risk Products</h2>
+            <div class="table-container">
+                <table id="highRiskProductsTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Price ($)</th>
+                            <th>Return Probability</th>
+                            <th>Freight Value ($)</th>
+                            <th>Weight (g)</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody id="highRiskProductsBody">
+                        <tr>
+                            <td colspan="6" class="loading">Loading product data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Product Insights -->
+        <div class="insights-section">
+            <h2><i class="fas fa-lightbulb"></i> Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Return Rate Analysis</h4>
+                    <p>Overall return rate of <strong>31%</strong> indicates quality control opportunities.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-boxes"></i>
+                    <h4>Category Focus</h4>
+                    <p>Electronics and furniture categories show highest return probabilities.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-dollar-sign"></i>
+                    <h4>Price Impact</h4>
+                    <p>Higher-priced items show varying return patterns - monitor closely.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-truck"></i>
+                    <h4>Freight Analysis</h4>
+                    <p>Freight costs correlate with product dimensions and return rates.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 BI Dashboard. Powered by Machine Learning & Power BI</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/powerbi.js"></script>
+    <script src="js/product-data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

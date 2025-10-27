@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI Dashboard - Sales Forecast</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>BI Dashboard</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Executive</a></li>
+                <li class="nav-item"><a href="customers.html" class="nav-link"><i class="fas fa-users"></i> Customers</a></li>
+                <li class="nav-item"><a href="products.html" class="nav-link"><i class="fas fa-box"></i> Products</a></li>
+                <li class="nav-item"><a href="sales.html" class="nav-link active"><i class="fas fa-chart-bar"></i> Sales</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1><i class="fas fa-chart-line"></i> Sales Forecast</h1>
+            <p class="subtitle">90-Day Sales Predictions with Confidence Intervals</p>
+        </div>
+
+        <!-- KPI Cards for Sales -->
+        <div class="kpi-container">
+            <div class="kpi-card green">
+                <div class="kpi-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Total Forecast</h3>
+                    <p class="kpi-value">$3.1M</p>
+                    <span class="kpi-label">90 Days</span>
+                </div>
+            </div>
+
+            <div class="kpi-card blue">
+                <div class="kpi-icon">
+                    <i class="fas fa-calendar-day"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Avg Daily Sales</h3>
+                    <p class="kpi-value">$34.5K</p>
+                    <span class="kpi-label">Per Day</span>
+                </div>
+            </div>
+
+            <div class="kpi-card purple">
+                <div class="kpi-icon">
+                    <i class="fas fa-arrow-up"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Peak Day Sales</h3>
+                    <p class="kpi-value">$42.0K</p>
+                    <span class="kpi-label">Maximum</span>
+                </div>
+            </div>
+
+            <div class="kpi-card orange">
+                <div class="kpi-icon">
+                    <i class="fas fa-chart-area"></i>
+                </div>
+                <div class="kpi-content">
+                    <h3>Trend</h3>
+                    <p class="kpi-value">+8.5%</p>
+                    <span class="kpi-label">Growth</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+            <div class="filter-controls">
+                <div class="filter-item">
+                    <label for="monthFilter">Month</label>
+                    <select id="monthFilter">
+                        <option value="all">All Months</option>
+                        <option value="nov">November</option>
+                        <option value="dec">December</option>
+                        <option value="jan">January</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="weekFilter">Week</label>
+                    <select id="weekFilter">
+                        <option value="all">All Weeks</option>
+                        <option value="1">Week 1</option>
+                        <option value="2">Week 2</option>
+                        <option value="3">Week 3</option>
+                        <option value="4">Week 4</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power BI Embed Section -->
+        <div class="powerbi-section">
+            <h2><i class="fas fa-chart-pie"></i> Sales Forecast Dashboard</h2>
+            <p class="section-description">Time series forecasting with confidence intervals</p>
+            
+            <div class="powerbi-container">
+                <div id="powerbi-sales-embed" class="powerbi-embed">
+                    <div class="embed-instructions">
+                        <i class="fas fa-chart-area"></i>
+                        <h3>Power BI Sales Dashboard</h3>
+                        <p>Configure your Power BI Sales Forecast page embed here.</p>
+                        <p class="note">Update <code>salesPageConfig</code> in <code>js/powerbi.js</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Sales Forecast Chart -->
+        <div class="chart-card full-width">
+            <h3><i class="fas fa-chart-area"></i> Daily Sales Forecast (90 Days)</h3>
+            <canvas id="dailySalesChart"></canvas>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Monthly Sales Breakdown</h3>
+                <canvas id="monthlySalesChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-calendar-week"></i> Weekly Pattern</h3>
+                <canvas id="weeklyPatternChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Sales by Day of Week -->
+        <div class="chart-card full-width">
+            <h3><i class="fas fa-calendar-alt"></i> Sales by Day of Week</h3>
+            <canvas id="dayOfWeekChart"></canvas>
+        </div>
+
+        <!-- Forecast Table -->
+        <div class="table-section">
+            <h2><i class="fas fa-table"></i> Forecast Details</h2>
+            <div class="table-container">
+                <table id="forecastTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Predicted Sales</th>
+                            <th>Lower Bound</th>
+                            <th>Upper Bound</th>
+                            <th>Month</th>
+                            <th>Day of Week</th>
+                        </tr>
+                    </thead>
+                    <tbody id="forecastTableBody">
+                        <tr>
+                            <td colspan="6" class="loading">Loading forecast data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sales Insights -->
+        <div class="insights-section">
+            <h2><i class="fas fa-lightbulb"></i> Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>90-Day Outlook</h4>
+                    <p>Forecasted sales of <strong>$3.1M</strong> over the next 90 days with 95% confidence.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-calendar-day"></i>
+                    <h4>Daily Average</h4>
+                    <p>Expected daily sales of <strong>$34,471</strong> with seasonal variations.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-arrow-trend-up"></i>
+                    <h4>Peak Periods</h4>
+                    <p>Highest sales expected around <strong>mid-month</strong> and weekends.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-chart-area"></i>
+                    <h4>Confidence Range</h4>
+                    <p>Sales predicted to range between <strong>$25K - $45K</strong> daily.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 BI Dashboard. Powered by Machine Learning & Power BI</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/powerbi.js"></script>
+    <script src="js/sales-data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

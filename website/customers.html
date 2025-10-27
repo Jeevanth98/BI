@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BI Dashboard - Customer Analysis</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line"></i>
+                <span>BI Dashboard</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Executive</a></li>
+                <li class="nav-item"><a href="customers.html" class="nav-link active"><i class="fas fa-users"></i> Customers</a></li>
+                <li class="nav-item"><a href="products.html" class="nav-link"><i class="fas fa-box"></i> Products</a></li>
+                <li class="nav-item"><a href="sales.html" class="nav-link"><i class="fas fa-chart-bar"></i> Sales</a></li>
+            </ul>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Customer Analysis</h1>
+            <p class="subtitle">Customer Segmentation & Churn Prediction Insights</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-section">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+            <div class="filter-controls">
+                <div class="filter-item">
+                    <label for="segmentFilter">Customer Segment</label>
+                    <select id="segmentFilter">
+                        <option value="all">All Segments</option>
+                        <option value="vip">VIP Customers</option>
+                        <option value="recent">Recent Buyers</option>
+                        <option value="unhappy">Unhappy Customers</option>
+                        <option value="inactive">Inactive Customers</option>
+                    </select>
+                </div>
+                <div class="filter-item">
+                    <label for="riskFilter">Churn Risk Level</label>
+                    <select id="riskFilter">
+                        <option value="all">All Risk Levels</option>
+                        <option value="high">High Risk</option>
+                        <option value="medium">Medium Risk</option>
+                        <option value="low">Low Risk</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Power BI Embed Section -->
+        <div class="powerbi-section">
+            <h2><i class="fas fa-chart-pie"></i> Customer Analytics Dashboard</h2>
+            <p class="section-description">Detailed customer segmentation and churn analysis</p>
+            
+            <div class="powerbi-container">
+                <div id="powerbi-customer-embed" class="powerbi-embed">
+                    <div class="embed-instructions">
+                        <i class="fas fa-users-cog"></i>
+                        <h3>Power BI Customer Dashboard</h3>
+                        <p>Configure your Power BI Customer Analysis page embed here.</p>
+                        <p class="note">Update <code>customerPageConfig</code> in <code>js/powerbi.js</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-bar"></i> Customers by Segment</h3>
+                <canvas id="customerSegmentChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie"></i> Churn Risk Distribution</h3>
+                <canvas id="customerRiskChart"></canvas>
+            </div>
+        </div>
+
+        <!-- High Risk Customers Table -->
+        <div class="table-section">
+            <h2><i class="fas fa-exclamation-triangle"></i> High-Risk Customers</h2>
+            <div class="table-container">
+                <table id="highRiskTable" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Segment</th>
+                            <th>Churn Probability</th>
+                            <th>Monetary Value</th>
+                            <th>Frequency</th>
+                            <th>Recency (days)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="highRiskTableBody">
+                        <tr>
+                            <td colspan="7" class="loading">Loading customer data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RFM Analysis -->
+        <div class="chart-card full-width">
+            <h3><i class="fas fa-project-diagram"></i> RFM Analysis (Recency vs Monetary)</h3>
+            <canvas id="rfmScatterChart"></canvas>
+        </div>
+
+        <!-- Customer Insights -->
+        <div class="insights-section">
+            <h2><i class="fas fa-lightbulb"></i> Key Insights</h2>
+            <div class="insights-grid">
+                <div class="insight-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Churn Rate Trend</h4>
+                    <p>Current churn rate is <strong>46%</strong>, indicating a need for retention strategies.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-users"></i>
+                    <h4>Segment Distribution</h4>
+                    <p><strong>35%</strong> are recent buyers, presenting an opportunity for engagement.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-crown"></i>
+                    <h4>VIP Customers</h4>
+                    <p><strong>25 VIP customers</strong> contribute the highest monetary value.</p>
+                </div>
+                <div class="insight-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h4>Action Required</h4>
+                    <p><strong>46 customers</strong> at high risk need immediate retention campaigns.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 BI Dashboard. Powered by Machine Learning & Power BI</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/powerbi.js"></script>
+    <script src="js/customer-data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
