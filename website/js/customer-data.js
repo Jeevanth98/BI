@@ -2,6 +2,9 @@
  * Customer Data Loading and Visualization
  */
 
+// Store all customers globally for filtering
+let allCustomers = [];
+
 // Load and display customer data
 async function loadCustomerData() {
     try {
@@ -9,8 +12,8 @@ async function loadCustomerData() {
         const customers = await loadCustomersFromCSV();
         
         if (customers) {
-            populateHighRiskTable(customers);
-            createCustomerCharts(customers);
+            allCustomers = customers;
+            applyCustomerFilters();
         } else {
             // Use sample data if CSV loading fails
             useSampleCustomerData();
@@ -215,6 +218,47 @@ function createCustomerCharts(customers) {
 }
 
 /**
+ * Apply customer filters
+ */
+function applyCustomerFilters() {
+    const segmentFilter = document.getElementById('segmentFilter');
+    const riskFilter = document.getElementById('riskFilter');
+    
+    let filteredCustomers = [...allCustomers];
+    
+    // Apply segment filter
+    if (segmentFilter && segmentFilter.value !== 'all') {
+        const segmentMap = {
+            'vip': 'VIP Customers',
+            'recent': 'Recent Buyers',
+            'unhappy': 'Unhappy Customers',
+            'inactive': 'Inactive Customers'
+        };
+        const targetSegment = segmentMap[segmentFilter.value];
+        filteredCustomers = filteredCustomers.filter(c => 
+            c.segment_name === targetSegment
+        );
+    }
+    
+    // Apply risk filter
+    if (riskFilter && riskFilter.value !== 'all') {
+        const riskMap = {
+            'high': 'High Risk',
+            'medium': 'Medium Risk',
+            'low': 'Low Risk'
+        };
+        const targetRisk = riskMap[riskFilter.value];
+        filteredCustomers = filteredCustomers.filter(c => 
+            c.churn_risk_level === targetRisk
+        );
+    }
+    
+    // Update displays
+    populateHighRiskTable(filteredCustomers);
+    createCustomerCharts(filteredCustomers);
+}
+
+/**
  * Use sample customer data (fallback)
  */
 function useSampleCustomerData() {
@@ -239,6 +283,7 @@ function useSampleCustomerData() {
         }
     ];
     
+    allCustomers = sampleCustomers;
     populateHighRiskTable(sampleCustomers);
 }
 
@@ -282,5 +327,16 @@ function addButtonStyles() {
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('customers')) {
         loadCustomerData();
+        
+        // Add filter event listeners
+        const segmentFilter = document.getElementById('segmentFilter');
+        const riskFilter = document.getElementById('riskFilter');
+        
+        if (segmentFilter) {
+            segmentFilter.addEventListener('change', applyCustomerFilters);
+        }
+        if (riskFilter) {
+            riskFilter.addEventListener('change', applyCustomerFilters);
+        }
     }
 });

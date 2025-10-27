@@ -2,14 +2,17 @@
  * Product Data Loading and Visualization
  */
 
+// Store all products globally for filtering
+let allProducts = [];
+
 // Load and display product data
 async function loadProductData() {
     try {
         const products = await loadProductsFromCSV();
         
         if (products) {
-            populateHighRiskProductsTable(products);
-            createProductCharts(products);
+            allProducts = products;
+            applyProductFilters();
         } else {
             useSampleProductData();
         }
@@ -254,6 +257,51 @@ async function loadCategoryData() {
 }
 
 /**
+ * Apply product filters
+ */
+function applyProductFilters() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    
+    let filteredProducts = [...allProducts];
+    
+    // Apply category filter
+    if (categoryFilter && categoryFilter.value !== 'all') {
+        filteredProducts = filteredProducts.filter(p => 
+            p.product_category_name === categoryFilter.value
+        );
+    }
+    
+    // Update displays
+    populateHighRiskProductsTable(filteredProducts);
+    createProductCharts(filteredProducts);
+}
+
+/**
+ * Populate category filter dropdown
+ */
+function populateCategoryFilter() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    if (!categoryFilter || allProducts.length === 0) return;
+    
+    // Get unique categories
+    const categories = [...new Set(allProducts.map(p => p.product_category_name))];
+    categories.sort();
+    
+    // Clear existing options except "All Categories"
+    categoryFilter.innerHTML = '<option value="all">All Categories</option>';
+    
+    // Add category options
+    categories.forEach(category => {
+        if (category && category !== 'N/A') {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+            categoryFilter.appendChild(option);
+        }
+    });
+}
+
+/**
  * Use sample product data (fallback)
  */
 function useSampleProductData() {
@@ -278,12 +326,21 @@ function useSampleProductData() {
         }
     ];
     
+    allProducts = sampleProducts;
     populateHighRiskProductsTable(sampleProducts);
 }
 
 // Initialize product page
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('products')) {
-        loadProductData();
+        loadProductData().then(() => {
+            populateCategoryFilter();
+            
+            // Add filter event listener
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', applyProductFilters);
+            }
+        });
     }
 });

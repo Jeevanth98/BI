@@ -2,14 +2,17 @@
  * Sales Forecast Data Loading and Visualization
  */
 
+// Store all sales data globally for filtering
+let allSalesData = [];
+
 // Load and display sales forecast data
 async function loadSalesData() {
     try {
         const salesData = await loadSalesFromCSV();
         
         if (salesData) {
-            populateForecastTable(salesData);
-            createSalesCharts(salesData);
+            allSalesData = salesData;
+            applySalesFilters();
         } else {
             useSampleSalesData();
         }
@@ -346,6 +349,72 @@ function aggregateByDayOfWeek(salesData) {
 }
 
 /**
+ * Apply sales filters
+ */
+function applySalesFilters() {
+    const monthFilter = document.getElementById('monthFilter');
+    const weekFilter = document.getElementById('weekFilter');
+    
+    let filteredSales = [...allSalesData];
+    
+    // Apply month filter
+    if (monthFilter && monthFilter.value !== 'all') {
+        filteredSales = filteredSales.filter(s => 
+            s.month_name === monthFilter.value
+        );
+    }
+    
+    // Apply week filter
+    if (weekFilter && weekFilter.value !== 'all') {
+        filteredSales = filteredSales.filter(s => 
+            s.week_number === weekFilter.value
+        );
+    }
+    
+    // Update displays
+    populateForecastTable(filteredSales);
+    createSalesCharts(filteredSales);
+}
+
+/**
+ * Populate filter dropdowns
+ */
+function populateSalesFilters() {
+    if (allSalesData.length === 0) return;
+    
+    // Populate month filter
+    const monthFilter = document.getElementById('monthFilter');
+    if (monthFilter) {
+        const months = [...new Set(allSalesData.map(s => s.month_name))];
+        monthFilter.innerHTML = '<option value="all">All Months</option>';
+        months.forEach(month => {
+            if (month) {
+                const option = document.createElement('option');
+                option.value = month;
+                option.textContent = month;
+                monthFilter.appendChild(option);
+            }
+        });
+    }
+    
+    // Populate week filter
+    const weekFilter = document.getElementById('weekFilter');
+    if (weekFilter) {
+        const weeks = [...new Set(allSalesData.map(s => s.week_number))];
+        weeks.sort((a, b) => parseInt(a) - parseInt(b));
+        weekFilter.innerHTML = '<option value="all">All Weeks</option>';
+        weeks.forEach(week => {
+            if (week) {
+                const option = document.createElement('option');
+                option.value = week;
+                option.textContent = `Week ${week}`;
+                weekFilter.appendChild(option);
+            }
+        });
+    }
+}
+
+/**
  * Use sample sales data (fallback)
  */
 function useSampleSalesData() {
@@ -370,6 +439,7 @@ function useSampleSalesData() {
         });
     }
     
+    allSalesData = salesData;
     populateForecastTable(salesData);
     createSalesCharts(salesData);
 }
@@ -377,6 +447,19 @@ function useSampleSalesData() {
 // Initialize sales page
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('sales')) {
-        loadSalesData();
+        loadSalesData().then(() => {
+            populateSalesFilters();
+            
+            // Add filter event listeners
+            const monthFilter = document.getElementById('monthFilter');
+            const weekFilter = document.getElementById('weekFilter');
+            
+            if (monthFilter) {
+                monthFilter.addEventListener('change', applySalesFilters);
+            }
+            if (weekFilter) {
+                weekFilter.addEventListener('change', applySalesFilters);
+            }
+        });
     }
 });
