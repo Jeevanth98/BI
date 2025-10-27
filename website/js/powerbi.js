@@ -8,28 +8,32 @@
 
 // Power BI Embed Configuration
 const powerBIConfig = {
+    // Main report embed URL and ID
+    reportId: '167b3656-03a0-48af-87ed-c029d429faea',
+    baseEmbedUrl: 'https://app.powerbi.com/reportEmbed?reportId=167b3656-03a0-48af-87ed-c029d429faea&autoAuth=true&ctid=d4963ce2-af94-4122-95a9-644e8b01624d',
+    
     executivePage: {
-        embedUrl: '', // Add your Power BI embed URL here
-        reportId: '', // Add your report ID
-        pageName: 'ExecutiveSummary', // Your page name in Power BI
-        accessToken: '' // Your access token (use Azure AD for production)
+        embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=167b3656-03a0-48af-87ed-c029d429faea&autoAuth=true&ctid=d4963ce2-af94-4122-95a9-644e8b01624d',
+        reportId: '167b3656-03a0-48af-87ed-c029d429faea',
+        pageName: 'ReportSection', // Change this to your actual page name if different
+        accessToken: '' // Using autoAuth, so access token not needed
     },
     customerPage: {
-        embedUrl: '',
-        reportId: '',
-        pageName: 'CustomerAnalysis',
+        embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=167b3656-03a0-48af-87ed-c029d429faea&autoAuth=true&ctid=d4963ce2-af94-4122-95a9-644e8b01624d',
+        reportId: '167b3656-03a0-48af-87ed-c029d429faea',
+        pageName: 'ReportSection1', // Change to your customer page name
         accessToken: ''
     },
     productPage: {
-        embedUrl: '',
-        reportId: '',
-        pageName: 'ProductAnalysis',
+        embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=167b3656-03a0-48af-87ed-c029d429faea&autoAuth=true&ctid=d4963ce2-af94-4122-95a9-644e8b01624d',
+        reportId: '167b3656-03a0-48af-87ed-c029d429faea',
+        pageName: 'ReportSection2', // Change to your product page name
         accessToken: ''
     },
     salesPage: {
-        embedUrl: '',
-        reportId: '',
-        pageName: 'SalesForecast',
+        embedUrl: 'https://app.powerbi.com/reportEmbed?reportId=167b3656-03a0-48af-87ed-c029d429faea&autoAuth=true&ctid=d4963ce2-af94-4122-95a9-644e8b01624d',
+        reportId: '167b3656-03a0-48af-87ed-c029d429faea',
+        pageName: 'ReportSection3', // Change to your sales page name
         accessToken: ''
     }
 };
@@ -52,13 +56,8 @@ function initPowerBIEmbed(containerSelector, config) {
         return;
     }
 
-    // Load Power BI JavaScript library
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/powerbi-client@2.22.0/dist/powerbi.min.js';
-    script.onload = () => {
-        embedReport(container, config);
-    };
-    document.body.appendChild(script);
+    // Use iframe embedding (simpler and works with autoAuth)
+    embedPowerBIIframe(containerSelector, config.embedUrl);
 }
 
 /**
@@ -146,12 +145,13 @@ function embedPowerBIIframe(containerSelector, iframeUrl) {
 
     container.innerHTML = `
         <iframe 
+            title="Power BI Report" 
             width="100%" 
             height="600" 
             src="${iframeUrl}" 
             frameborder="0" 
             allowFullScreen="true"
-            style="border: none;">
+            style="border: none; min-height: 600px;">
         </iframe>
     `;
 }
