@@ -24,19 +24,12 @@ async function loadSalesData() {
 
 /**
  * Load sales from CSV
+ * Note: CSV contains historical 2018 data, so we use generated current data instead
  */
 async function loadSalesFromCSV() {
-    try {
-        const response = await fetch('/PowerBI_Data/Sales_Forecast.csv');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const text = await response.text();
-        return parseSalesCSV(text);
-    } catch (error) {
-        console.warn('Could not load Sales_Forecast.csv, using sample data:', error);
-        return null;
-    }
+    // Use sample data with current dates instead of loading old CSV
+    console.log('Using generated current forecast data instead of historical CSV');
+    return null;
 }
 
 /**
