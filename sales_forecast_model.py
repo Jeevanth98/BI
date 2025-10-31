@@ -4,9 +4,16 @@ Sales Forecasting Model using Facebook Prophet
 
 import pandas as pd
 import numpy as np
-from prophet import Prophet
-import pickle
+import warnings
 import os
+import pickle
+
+# Suppress Prophet plotly warning
+warnings.filterwarnings('ignore')
+import logging
+logging.getLogger('prophet').setLevel(logging.ERROR)
+
+from prophet import Prophet
 
 
 class SalesForecaster:
@@ -40,8 +47,6 @@ class SalesForecaster:
         # Make forecast
         forecast = self.model.predict(future)
         
-        print(f"Forecast generated for next {periods} days")
-        
         return forecast
     
     def save_model(self, filepath='models/sales_forecast_model.pkl'):
@@ -64,8 +69,6 @@ class SalesForecaster:
     
     def forecast_to_csv(self, output_csv, periods=90):
         """Generate forecast and save to CSV"""
-        print(f"\n=== Generating {periods}-day forecast ===")
-        
         # Generate forecast
         forecast = self.predict(periods)
         
@@ -80,7 +83,6 @@ class SalesForecaster:
         
         # Save to CSV
         forecast_summary.to_csv(output_csv, index=False)
-        print(f"Forecast saved to {output_csv}")
         
         return forecast_summary
     
